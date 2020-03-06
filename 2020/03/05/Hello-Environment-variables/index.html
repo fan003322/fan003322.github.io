@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fan003322.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="当你打开命令行cmd程序，敲下python命令时，有没有想过cmd是怎么找到python程序进行执行的，为什么你不需要把python的完整路径（例如E:\Python\Python37\python.exe）输入。　　从python命令到python可执行程序，背后默默的起作用的就是Windows上非常有名的环境变量Path。当你输入python命令时，cmd会从Path环境变量中设置的文件夹">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hello Environment variables">
+<meta property="og:url" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/index.html">
+<meta property="og:site_name" content="Fan003322">
+<meta property="og:description" content="当你打开命令行cmd程序，敲下python命令时，有没有想过cmd是怎么找到python程序进行执行的，为什么你不需要把python的完整路径（例如E:\Python\Python37\python.exe）输入。　　从python命令到python可执行程序，背后默默的起作用的就是Windows上非常有名的环境变量Path。当你输入python命令时，cmd会从Path环境变量中设置的文件夹">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/python_in_cmd.png">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/ev.JPG">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/path_win7.JPG">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/path_in_cmd.JPG">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/path_win10.png">
+<meta property="og:image" content="https://www.rapidee.com/images/xrapidee.png.pagespeed.ic.xneSx_nHk4.webp">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/MINGW_HOME.JPG">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/MINGW_HOME_PATH.JPG">
+<meta property="article:published_time" content="2020-03-05T14:23:53.000Z">
+<meta property="article:modified_time" content="2020-03-06T14:54:28.037Z">
+<meta property="article:author" content="Fan">
+<meta property="article:tag" content="software">
+<meta property="article:tag" content="环境变量">
+<meta property="article:tag" content="environment variables">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/python_in_cmd.png">
+
+<link rel="canonical" href="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Hello Environment variables | Fan003322</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fan003322</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fan003322">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hello Environment variables
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-05 22:23:53" itemprop="dateCreated datePublished" datetime="2020-03-05T22:23:53+08:00">2020-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-06 22:54:28" itemprop="dateModified" datetime="2020-03-06T22:54:28+08:00">2020-03-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hello-Develop/" itemprop="url" rel="index"><span itemprop="name">Hello Develop</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　　当你打开命令行<code>cmd</code>程序，敲下<code>python</code>命令时，有没有想过<code>cmd</code>是怎么找到<code>python</code>程序进行执行的，为什么你不需要把python的完整路径（例如<code>E:\Python\Python37\python.exe</code>）输入。<br><img src="/2020/03/05/Hello-Environment-variables/python_in_cmd.png" alt="python.exe"><br>　　从python命令到python可执行程序，背后默默的起作用的就是Windows上非常有名的环境变量<code>Path</code>。当你输入python命令时，cmd会从<code>Path</code>环境变量中设置的文件夹中，依次去寻找名为python的可执行程序或者批处理文件，并运行找到的第一符合命名的程序。<br>　　我们也一定遇到过一些令人困恼的问题。比如因为没有添加可执行文件所在的路径，导致找不到想要运行的程序。或者是添加的版本不对，导致找不到想要的那个版本。我们往往会忽视环境变量的存在，但是当你忽视它的时候，它往往会给你惹些麻烦。<br>　　环境变量就是本文的主题。</p>
+<hr>
+<h2 id="1-环境变量是什么？"><a href="#1-环境变量是什么？" class="headerlink" title="1. 环境变量是什么？"></a>1. 环境变量是什么？</h2><p>　　环境变量（Environment Variable, EV），是一些系统/用户定义的全局变量，它在程序刚刚启动的时候会被加载，并在整个程序生命周期内可以被读取。<br>　　很多程序在运行时，会去读取一些约定俗称的环境变量来完成程序所需要的功能。<br>　　例如系统默认的环境变量<code>TEMP</code>定义了一个临时文件夹路径，通常解压程序都会读取这个变量，并默认会将临时文件解压到该路径下。<br>　　例如一些Java程序会默认去读取<code>JAVA_HOME</code>变量获取Java包的路径。</p>
+<hr>
+<h2 id="2-怎么查看环境变量？"><a href="#2-怎么查看环境变量？" class="headerlink" title="2. 怎么查看环境变量？"></a>2. 怎么查看环境变量？</h2><p>　　在Windows上，可以通过</p>
+<ul>
+<li>右键点击<code>计算机</code></li>
+<li>选择<code>属性</code></li>
+<li>选择<code>高级系统设置</code></li>
+<li>选择<code>高级</code></li>
+<li>选择<code>环境变量</code><br>  查看和修改环境变量。<br><img src="/2020/03/05/Hello-Environment-variables/ev.JPG" alt></li>
+</ul>
+<p>　　可以看到上下两栏环境变量值。用户变量是当前用户专属的，而系统变量则是所有用户共享的。在系统变量里可以找到<code>Path</code>变量。当运行程序（比如命令行cmd.exe）时，这些变量都会加载到你当前的程序中，你可以读取这些值。<br>　　环境变量并不是Windows系统独有的。在Linux上，每一个程序都会有该程序独有的环境变量。如果使用<code>bash</code>，可以使用<code>env</code>命令查看当前shell中所包含的环境变量。<br>　　也可以在用户目录下编辑<code>.bashrc</code>，添加一些<code>export VAR_NAME=&quot;*****&quot;</code>的语句，向当前的shell注入名为<code>VAR_NAME</code>的环境变量。当你使用mobaxterm或者putty进行SSH连接环境时，<code>.bashrc</code>脚本就会被自动执行，你可以读取到定义好的环境变量值。</p>
+<blockquote>
+<h3 id="Tip-1：修改了环境变量，需要确保它生效"><a href="#Tip-1：修改了环境变量，需要确保它生效" class="headerlink" title="Tip 1：修改了环境变量，需要确保它生效"></a>Tip 1：修改了环境变量，需要确保它生效</h3><p>值得注意的是，环境变量通常是在程序加载时被生效到程序中的。修改了<code>Path</code>值以后，不要忘了重启命令行使之生效。或者修改了<code>.bashrc</code>以后，不要忘了运行<code>source .bashrc</code>命令。</p>
+</blockquote>
+<hr>
+<h2 id="3-修改Path的优雅姿势"><a href="#3-修改Path的优雅姿势" class="headerlink" title="3. 修改Path的优雅姿势"></a>3. 修改Path的优雅姿势</h2><p>　　因为我们的主要工作界面还是Windows，大部分时候还是需要在Windows上进行开发，进行本地编译验证工作。修改Path环境变量是永远也躲不过的一关，因此单独拿出来介绍一下。<br>　　<code>Path</code>就是Windows最常用的环境变量，它里面包含了用<code>分号;</code>分割的多个路径。当你不指明可执行程序的路径时，就会从这些路径中去寻找。<br>　　在Win7上，编辑Path的界面是相当丑陋的。变量值只能单行浏览。在cmd中，我们可以输入path命令来查看，也是相当丑陋。如果你想找某个路径是否存在，基本上需要把它拷贝出来，在记事本里搜索。<br><img src="/2020/03/05/Hello-Environment-variables/path_win7.JPG" alt><br><img src="/2020/03/05/Hello-Environment-variables/path_in_cmd.JPG" alt><br>　　在Win10上，这一点得到了改善。每个路径都是单独列出，方便阅读和修改。<br><img src="/2020/03/05/Hello-Environment-variables/path_win10.png" alt></p>
+<blockquote>
+<h3 id="Tips-2：在Win7上使用第三方工具修改EV"><a href="#Tips-2：在Win7上使用第三方工具修改EV" class="headerlink" title="Tips 2：在Win7上使用第三方工具修改EV"></a>Tips 2：在Win7上使用第三方工具修改EV</h3><p>例如Rapid Environment Editor，<a href="https://www.rapidee.com/en/about" target="_blank" rel="noopener">点击官方网站</a></p>
+</blockquote>
+<p>　　为了应对Win7上系统的不良设计，我们可能需要借助一些第三方工具。在这个工具中，通过树状形式展开了环境变量，能够起到和Win10一样直观的效果。<br><img src="https://www.rapidee.com/images/xrapidee.png.pagespeed.ic.xneSx_nHk4.webp" alt="Rapid截图"></p>
+<blockquote>
+<h3 id="Tips-3：新添加的路径一般加在末尾"><a href="#Tips-3：新添加的路径一般加在末尾" class="headerlink" title="Tips 3：新添加的路径一般加在末尾"></a>Tips 3：新添加的路径一般加在末尾</h3><p>查找可执行程序是按顺序从前往后查找，靠前的往往是系统目录，你不会希望你配置的第三方程序插了系统程序的队。</p>
+</blockquote>
+<p>　　但是直接往Path添加<strong>可执行程序所在文件夹的绝对路径</strong>并不是最佳方式。<br>　　例如，我们希望把MinGW添加到Path中，使得我们能够在Windows上使用gcc进行编译。<br>MinGW的所在路径可能是：<strong>E:/mingw64/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/</strong>。<br>　　那么我们可以把<strong>E:/mingw64/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/</strong> <strong><em>bin/</em></strong>添加到Path的末尾。<br>　　但是这并不是最佳方式。</p>
+<blockquote>
+<h3 id="Tips-4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path"><a href="#Tips-4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path" class="headerlink" title="Tips 4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path"></a>Tips 4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path</h3><ol>
+<li>先添加<code>MINGW64_HOME</code>变量，值为<strong>E:/mingw64/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/</strong></li>
+<li>在Path末尾添加<code>%MINGW64_HOME%/bin</code>。</li>
+</ol>
+</blockquote>
+<p><img src="/2020/03/05/Hello-Environment-variables/MINGW_HOME.JPG" alt><br><img src="/2020/03/05/Hello-Environment-variables/MINGW_HOME_PATH.JPG" alt></p>
+<p>　　这样做有诸多好处。<br>　　比方说，MinGW的版本更新了，或者在本地需要支持多个版本。那么你并不需要去Path里艰难寻找MinGW的路径，不用担心修改坏。你只需要更新<code>MINGW64_HOME</code>变量值就行了。<br>　　另外，回忆前面提到的，环境变量是给各个应用程序共享的。创建<code>MINGW64_HOME</code>变量，意味着你在其他程序中也能使用。比方说，你想在VSCode中编译调试，在<code>launch.json</code>中指定<code>gdb</code>所在位置时，你也可以直接使用该环境变量，避免将来更新MinGW而导致VSCode调试工程的失败。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在lanuch.json中引用系统变量指定gdb位置</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">"miDebuggerPath"</span>: <span class="string">"$&#123;env:MINGW64_HOME&#125;/bin/gdb.exe"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>　　希望通过本文能够使大家对环境变量有一个基本的印象，并学会在Windows配置环境变量。将来遇到找不到运行的程序之类的问题时，能提供一个定位问题的思路，并对症下药。并在操作Linux系统时，也能举一反三，面对新的开发环境不会感到手足无措。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/software/" rel="tag"># software</a>
+              <a href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" rel="tag"># 环境变量</a>
+              <a href="/tags/environment-variables/" rel="tag"># environment variables</a>
+          </div>
+
+        
+
+
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-环境变量是什么？"><span class="nav-text">1. 环境变量是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-怎么查看环境变量？"><span class="nav-text">2. 怎么查看环境变量？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tip-1：修改了环境变量，需要确保它生效"><span class="nav-text">Tip 1：修改了环境变量，需要确保它生效</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-修改Path的优雅姿势"><span class="nav-text">3. 修改Path的优雅姿势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tips-2：在Win7上使用第三方工具修改EV"><span class="nav-text">Tips 2：在Win7上使用第三方工具修改EV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tips-3：新添加的路径一般加在末尾"><span class="nav-text">Tips 3：新添加的路径一般加在末尾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tips-4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path"><span class="nav-text">Tips 4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-总结"><span class="nav-text">4. 总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
