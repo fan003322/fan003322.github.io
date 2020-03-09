@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fan003322.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在Windows上开发C&#x2F;C++程序有很多方式可供选择，通常的第一反应可能是使用Visual Studio。　　但是如果你正在开发一个跨平台程序，比方说你正在开发一个算法库，这个库主要运行在Linux系统中，同时需要将它编译成native-lib集成在Android APK里做算法测试，但是你的主要编程界面又是在Windows，希望在Windows上做编译调试。那么这时候如果使用Visual">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hello MinGW-w64">
+<meta property="og:url" content="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/index.html">
+<meta property="og:site_name" content="Fan003322">
+<meta property="og:description" content="在Windows上开发C&#x2F;C++程序有很多方式可供选择，通常的第一反应可能是使用Visual Studio。　　但是如果你正在开发一个跨平台程序，比方说你正在开发一个算法库，这个库主要运行在Linux系统中，同时需要将它编译成native-lib集成在Android APK里做算法测试，但是你的主要编程界面又是在Windows，希望在Windows上做编译调试。那么这时候如果使用Visual">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/dll_not_found.png">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/mingw_version.JPG">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/mingw_7z.JPG">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/MINGW_HOME.JPG">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/MINGW_HOME_PATH.JPG">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/cmd_mingw.PNG">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/mingw_vscode.PNG">
+<meta property="article:published_time" content="2020-03-09T12:26:57.000Z">
+<meta property="article:modified_time" content="2020-03-09T15:32:26.373Z">
+<meta property="article:author" content="Fan">
+<meta property="article:tag" content="software">
+<meta property="article:tag" content="mingw">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/dll_not_found.png">
+
+<link rel="canonical" href="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Hello MinGW-w64 | Fan003322</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fan003322</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fan003322.github.io/2020/03/09/Hello-MinGW-w64/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fan003322">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hello MinGW-w64
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-03-09 20:26:57 / Modified: 23:32:26" itemprop="dateCreated datePublished" datetime="2020-03-09T20:26:57+08:00">2020-03-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hello-Develop/" itemprop="url" rel="index"><span itemprop="name">Hello Develop</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　　在Windows上开发C/C++程序有很多方式可供选择，通常的第一反应可能是使用Visual Studio。<br>　　但是如果你正在开发一个跨平台程序，比方说你正在开发一个算法库，这个库主要运行在Linux系统中，同时需要将它编译成native-lib集成在Android APK里做算法测试，但是你的主要编程界面又是在Windows，希望在Windows上做编译调试。那么这时候如果使用Visual Studio就可能面临一些问题，比如VS中编译器的标准和GNU会有差别，API也可能有差别，你不仅需要将代码在至少2种环境中编译调试通过，还需要维护多套的编译工程。维护代码的工作量已经不小了，实际上维护编译工程也不是一个简单轻松的事，那么VS可能就不是一个很好的选择。<br>　　对于这种场景，我推荐使用<code>MinGW</code>搭配<code>CMake</code>的方式构建整个编译工具链，达成<strong>代码和编译工程One Track</strong>的目的，提交开发效率。<br>　　本文就是介绍MinGW的使用。<br>　　如果只想知道MinGW怎么使用，可以单刀直入，直接看<code>第5节 - 使用方法</code>。</p>
+<hr>
+<h2 id="1-MinGW和MinGW-w64"><a href="#1-MinGW和MinGW-w64" class="headerlink" title="1. MinGW和MinGW-w64"></a>1. MinGW和MinGW-w64</h2><p>　　说到MinGW，很多人经常会搞混<code>MinGW</code>和<code>MinGW-w64</code>，在展开具体介绍之前，先把这2个名字梳理清楚。</p>
+<ul>
+<li><code>MinGW</code>是32位版本，或者叫做MinGW-w32，官方网站：<a href="http://www.mingw.org/" target="_blank" rel="noopener">http://www.mingw.org/</a></li>
+<li><code>MinGW-w64</code>是64位版本。官方网站：<a href="http://MinGW-w64.org/" target="_blank" rel="noopener">http://MinGW-w64.org/</a></li>
+</ul>
+<p>　　MinGW-w64官网第一句介绍已经讲的很清楚了：</p>
+<blockquote>
+<p>MinGW-w64 is an <strong>advancement of the original mingw.org project</strong>, created to support the GCC compiler on Windows systems. It has forked it in 2007 in order to <strong>provide support for 64 bits and new APIs</strong>. It has since then gained <strong>widespread use and distribution</strong>.</p>
+</blockquote>
+<p>　　这里面几个关键信息：</p>
+<ol>
+<li><strong>advancement of the original mingw.org project</strong>，MinGW-w64是由MinGW扩展而来；</li>
+<li><strong>provide support for 64 bits and new APIs</strong>，扩展的内容是支持64位，以及支持新API；</li>
+<li><strong>widespread use and distribution</strong>，MinGW-w64被广泛使用。</li>
+</ol>
+<p>　　因此，现在一般说MinGW，都是指MinGW-w64。本文后面在使用MinGW时，也是指MinGW-w64。</p>
+<hr>
+<h2 id="2-MinGW是什么？"><a href="#2-MinGW是什么？" class="headerlink" title="2. MinGW是什么？"></a>2. MinGW是什么？</h2><p>　　在MinGW-w32的官网第一句是这么介绍的，也很言简意赅。所以当你不了解一个新的工具时，第一反应应该是查官网。</p>
+<blockquote>
+<p><strong>MinGW</strong>, a contraction of “Minimalist GNU for Windows”, is a minimalist development environment for native Microsoft Windows applications.</p>
+</blockquote>
+<p>　　简单说，MinGW就是Windows上的GNU，同时它是一个最小集。<br>　　GNU，意味着我们可以使用gcc/g++工具链编译出在Windows上运行的原生Windows应用。要让程序在特定的操作系统上运行起来，光有编译出来的可执行程序是不够的。比方说，你在代码里使用了std的库，但是你没有显式的编译std的代码。那么std库就是由编译工具链提供的。在Windows上，Windows SDK会提供一套运行的库。同样的MinGW也会提供一套。<br>　　同时它是最小的，意味着它足够的轻量。一个MinGW压缩包才不到<strong>50M</strong>，相比较一个Visual Studio全家桶动辄十几G。你真的愿意为了写一个”Hello World”而不得不动用核武器吗？<br>　　使用MinGW开发的程序，不需要额外的第三方DLL支持就可以直接在Windows上运行。我想很多人都遇到过自己编译的程序在别人那里遇到运行缺少DLL的问题。<br><img src="/2020/03/09/Hello-MinGW-w64/dll_not_found.png" alt="dll_not_found"></p>
+<hr>
+<h2 id="3-为什么不使用Cygwin？"><a href="#3-为什么不使用Cygwin？" class="headerlink" title="3. 为什么不使用Cygwin？"></a>3. 为什么不使用Cygwin？</h2><p>　　另外还有一个比较容易搞混的工具是Cygwin。<br>　　Cygwin提供完整的类Unix环境，包括主流Unix的系统调用及库实现，也包括了编译工具链MinGW，还有shell等工具。所以Cygwin的安装包也不小，其中包含了很多可供选择的其他组件。Cygwin重视系统兼容性优先于性能。相对的，MinGW则着重简化与性能。<br>　　MinGW并不提供某些难以用Windows API实现的POSIX API，例如<code>fork</code>，<code>mmap</code>和<code>ioctl</code>等。所以，如果代码使用了POSIX API，需要在windows上调测，那么你就需要使用Cygwin。使用Cygwin主要目的一般都是移植Unix软件到Windows。<br>　　但是我们总是希望代码能够尽量减少对系统的依赖。大部分情况下，只需要在Windows上能编译运行就可以了。因此我们也不需要屠龙刀，在不需要完整的类Unix环境时，选择MinGW即可。<br>　　如果希望对Cygwin有完整的了解，可以看下：<a href="https://www.cygwin.com/" target="_blank" rel="noopener"><strong>Cygwin官网</strong></a>、<a href="https://en.wikipedia.org/wiki/Cygwin" target="_blank" rel="noopener"><strong>Cygwin wiki</strong></a>以及<a href="https://zh.wikipedia.org/wiki/MinGW" target="_blank" rel="noopener"><strong>MinGW wiki</strong></a>中“与Cygwin比较”章节。</p>
+<hr>
+<h2 id="4-为什么不使用Visual-C-Visual-Studio-？"><a href="#4-为什么不使用Visual-C-Visual-Studio-？" class="headerlink" title="4. 为什么不使用Visual C++ (Visual Studio)？"></a>4. 为什么不使用Visual C++ (Visual Studio)？</h2><p>　　前面已经提到过不使用Visual Studio的原因，Visual Studio跨平台支持不佳。就算只在Windows上开发，也显得过于重型。它包括了整个软件生命周期中所需要的大部分工具，如UML工具、代码管控工具、集成开发环境（IDE）等等。所写的目标代码适用于微软支持的所有平台，包括Microsoft Windows、Windows Phone、Windows CE、.NET Framework、.NET Compact Framework和Microsoft Silverlight。但是，如果不是开发Windows桌面应用程序，对于普通的开发者，实在是不需要一上来就全副武装，轻装上阵往往更好。<br>　　在Visual Studio中，Visual C++是C/C++的开发工具。但是VC++对C99标准的支持度并不完整。微软一直是独树一帜的，对C99标准的支持虽然随着Visual C++的更新一直在改进，但是还是有许多不支持。这使得一些使用C99标准编写的跨平台的C程序，在Visual C++上可能会编译失败。同时Visual C++还集成了微软Windows视窗操作系统应用程序接口（Windows API）、三维动画DirectX API，Microsoft.NET框架。这些其实大部分时候也用不到。脱离Visual Studio独立使用Visual C++编译也很困难，很少见到有独立使用Visual C++编译的例子。似乎连自己的<code>Visual Studio Code</code>都没有支持。<br>　　因此，在Windows上简单的编译调试C/C++代码，还是不推荐使用Visual Studio。</p>
+<hr>
+<h2 id="5-使用方法"><a href="#5-使用方法" class="headerlink" title="5. 使用方法"></a>5. 使用方法</h2><p>　　前面提到了，MinGW-w64的优点之一轻量。因此使用指导环节就不会很长。</p>
+<h3 id="5-1-从官网下载软件包"><a href="#5-1-从官网下载软件包" class="headerlink" title="5.1 从官网下载软件包"></a>5.1 从官网下载软件包</h3><p>　　MinGW的代码托管在<code>sourceforge</code>上：<strong><a href="https://sourceforge.net/projects/MinGW-w64/files/" target="_blank" rel="noopener">https://sourceforge.net/projects/MinGW-w64/files/</a></strong></p>
+<p><img src="/2020/03/09/Hello-MinGW-w64/mingw_version.JPG" alt="mingw version"></p>
+<ul>
+<li><strong>GCC版本</strong></li>
+</ul>
+<p>　　如果没有特殊的要求，本地编译调试一般选择<strong>高版本GCC</strong>。高版本的GCC对C++的支持性会更好，例如8.1版本支持C++17和C++2a草案库特性。</p>
+<ul>
+<li><strong>32/64位</strong></li>
+</ul>
+<p>　　<code>x86_64</code>就是64位，<code>i686</code>就是32位。一般选择64位<strong>x86_64</strong>。</p>
+<ul>
+<li><strong>线程模型</strong></li>
+</ul>
+<p>　　<code>posix</code>和<code>win32</code>是线程模型的选择。<br>　　<a href="https://stackoverflow.com/questions/17242516/mingw-w64-threads-posix-vs-win32" target="_blank" rel="noopener">[<strong>stackoverflow</strong>] mingw-w64 threads: posix vs win32</a>上有一个全面的解释。简单来说，就是posix版本中，MinGW-w64在windows线程api上封装了完整的gcc线程实现，因此可以使用C++11中线程特性：<code>&lt;thread&gt;</code>, <code>&lt;mutex&gt;</code>, <code>&lt;future&gt;</code>。<code>std</code>提供的线程库是值得一学，并且相当好用的。<br>　　因此结论就是<strong>使用posix版本</strong>。</p>
+<ul>
+<li><strong>异常处理</strong></li>
+</ul>
+<p>　　<code>sjlj</code>, <code>dwarf</code>, <code>seh</code>是C++中异常处理(Exception Handling)的选择。<br>　　还是参考<a href="https://stackoverflow.com/questions/15670169/what-is-difference-between-sjlj-vs-dwarf-vs-seh" target="_blank" rel="noopener">[<strong>stackoverflow</strong>]What is difference between sjlj vs dwarf vs seh?</a>中的解释。直接看结论：</p>
+<blockquote>
+<p>So now in 2016 we can put this question to rest and <strong>simply always use SEH</strong>. – rustyx May 13 ‘16 at 19:55</p>
+</blockquote>
+<p>　　<strong>Solved! 使用seh版本</strong>。</p>
+<blockquote>
+<p><strong>TIP</strong> 这里也多提一嘴，遇到软件问题，还是要多看看高质量的外网，比方说StackOverflow。</p>
+</blockquote>
+<blockquote>
+<p>综合上面的所有选择，一般会选择<strong>MinGW-W64 GCC-8.1.0 x86_64-posix-seh</strong>使用。</p>
+</blockquote>
+<h3 id="5-2-解压配置环境变量"><a href="#5-2-解压配置环境变量" class="headerlink" title="5.2 解压配置环境变量"></a>5.2 解压配置环境变量</h3><p>　　下载的包<code>x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z</code>长这样：<br><img src="/2020/03/09/Hello-MinGW-w64/mingw_7z.JPG" alt="mingw_7z"><br>　　解压时保留版本信息是一个优良的选择：</p>
+<blockquote>
+<p>E:/mingw64/<strong>x86_64-8.1.0-release-posix-seh-rt_v6-rev0</strong>/mingw64</p>
+</blockquote>
+<p>　　然后配置环境变量：<br><img src="/2020/03/09/Hello-MinGW-w64/MINGW_HOME.JPG" alt><br><img src="/2020/03/09/Hello-MinGW-w64/MINGW_HOME_PATH.JPG" alt></p>
+<blockquote>
+<p>关于环境变量的配置，想了解更多信息，可以参考同系列的<a href="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/"><strong>Hello Environment Variables</strong></a></p>
+</blockquote>
+<h3 id="5-3-使用MinGW提供编译工具链"><a href="#5-3-使用MinGW提供编译工具链" class="headerlink" title="5.3 使用MinGW提供编译工具链"></a>5.3 使用MinGW提供编译工具链</h3><p>　　这就大功告成了，可以在其他工具里使用了。</p>
+<ul>
+<li><p>可以在命令行中执行<code>gcc</code>, <code>g++</code>, <code>gdb</code>, <code>make</code>：<br><img src="/2020/03/09/Hello-MinGW-w64/cmd_mingw.PNG" alt></p>
+</li>
+<li><p>在VSCode的<strong>C/C++扩展</strong>中配置后，可以在VSCode中编译运行C/C++程序<br><img src="/2020/03/09/Hello-MinGW-w64/mingw_vscode.PNG" alt></p>
+</li>
+</ul>
+<blockquote>
+<p>整个过程相当简单，配置效率可能主要取决于下载的网速，也不用担心选择的组件不对，导致编译运行出错，这种便捷是Visual Studio无法比拟的。</p>
+</blockquote>
+<hr>
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><p>　　MinGW适用这样的场景：</p>
+<ul>
+<li>开发<strong>跨平台</strong>程序，并且主要是在Windows上编程调试，在GNU环境中运行；</li>
+<li><strong>轻量</strong>，希望简单的配置就能开始编程调试；</li>
+<li><strong>多IDE的支持</strong>，配置了MinGW以后，可以在命令行、VSCode、Clion、CodeBlocks中使用。</li>
+</ul>
+<p>　　如果你有这样的诉求，请不要犹豫，使用MinGW帮助你更简单快速的验证C/C++程序。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/software/" rel="tag"># software</a>
+              <a href="/tags/mingw/" rel="tag"># mingw</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/05/Hello-Environment-variables/" rel="prev" title="Hello Environment variables">
+      <i class="fa fa-chevron-left"></i> Hello Environment variables
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-MinGW和MinGW-w64"><span class="nav-text">1. MinGW和MinGW-w64</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-MinGW是什么？"><span class="nav-text">2. MinGW是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-为什么不使用Cygwin？"><span class="nav-text">3. 为什么不使用Cygwin？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-为什么不使用Visual-C-Visual-Studio-？"><span class="nav-text">4. 为什么不使用Visual C++ (Visual Studio)？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-使用方法"><span class="nav-text">5. 使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-从官网下载软件包"><span class="nav-text">5.1 从官网下载软件包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-解压配置环境变量"><span class="nav-text">5.2 解压配置环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-使用MinGW提供编译工具链"><span class="nav-text">5.3 使用MinGW提供编译工具链</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-总结"><span class="nav-text">6. 总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
