@@ -27,13 +27,13 @@
 <meta property="og:site_name" content="Fan003322">
 <meta property="og:description" content="C语言中，将一个struct或者Array初始化为0，是一个非常常见的操作。本文主要介绍如何正确简洁的做初始化。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://i.stack.imgur.com/m36nk.gif">
+<meta property="og:image" content="https://fan003322.github.io/2020/03/11/c-struct-array-initialization/c_data_types.gif">
 <meta property="article:published_time" content="2020-03-11T13:50:02.000Z">
-<meta property="article:modified_time" content="2020-03-11T15:41:57.709Z">
+<meta property="article:modified_time" content="2020-03-12T12:39:36.225Z">
 <meta property="article:author" content="Fan">
 <meta property="article:tag" content="C">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.stack.imgur.com/m36nk.gif">
+<meta name="twitter:image" content="https://fan003322.github.io/2020/03/11/c-struct-array-initialization/c_data_types.gif">
 
 <link rel="canonical" href="https://fan003322.github.io/2020/03/11/c-struct-array-initialization/">
 
@@ -173,10 +173,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-03-11 21:50:02 / Modified: 23:41:57" itemprop="dateCreated datePublished" datetime="2020-03-11T21:50:02+08:00">2020-03-11</time>
+              <time title="Created: 2020-03-11 21:50:02" itemprop="dateCreated datePublished" datetime="2020-03-11T21:50:02+08:00">2020-03-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-12 20:39:36" itemprop="dateModified" datetime="2020-03-12T20:39:36+08:00">2020-03-12</time>
+              </span>
 
           
 
@@ -208,7 +214,7 @@
 <p>　　这个warning在打开了<code>-Wmissing-braces</code>或者<code>-Wall</code>编译选项时会出现。</p>
 <p>　　为了找到原因，我们需要了解C语言中不同类型的数据的初始化方式。</p>
 <h3 id="2-1-不同类型的初始化"><a href="#2-1-不同类型的初始化" class="headerlink" title="2.1　不同类型的初始化"></a>2.1　不同类型的初始化</h3><p>　　C语言中，需要被初始化的变量，分成2种类型：<strong>Aggregate</strong> Type和<strong>Scalar</strong> Type。</p>
-<p><img src="https://i.stack.imgur.com/m36nk.gif" alt="data types"></p>
+<p><img src="/2020/03/11/c-struct-array-initialization/c_data_types.gif" alt="data types"></p>
 <p>Scalar Types主要有：</p>
 <ul>
 <li>算数类型：比如int, char, bool, float</li>
@@ -222,13 +228,13 @@
 <li>union</li>
 </ul>
 <p>在初始化Aggregate Types时，编译器会认为初始化的值需要由一对花括号<code>{}</code>包含。<br>比方说：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Array的元素是Aggregate Type</span></span><br><span class="line"><span class="comment">// 这里所有值被初始化为0</span></span><br><span class="line"><span class="keyword">int</span> a[<span class="number">10</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Array是Aggregate Type，所以需要一对&#123;&#125;</span></span><br><span class="line"><span class="comment">// struct foo也是Aggregate Type，因此需要再加一对&#123;&#125;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">foo</span> <span class="title">b</span>[10] = &#123;</span>&#123;<span class="number">0</span>&#125;&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Array的元素是Aggregate Type</span></span><br><span class="line"><span class="comment">// 这里所有值被初始化为0</span></span><br><span class="line"><span class="keyword">int</span> a[<span class="number">10</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Array是Aggregate Type,</span></span><br><span class="line"><span class="comment">// 所以需要一对&#123;&#125;</span></span><br><span class="line"><span class="comment">// struct foo也是Aggregate Type，</span></span><br><span class="line"><span class="comment">// 因此需要再加一对&#123;&#125;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">foo</span> <span class="title">b</span>[10] = &#123;</span>&#123;<span class="number">0</span>&#125;&#125;;</span><br></pre></td></tr></table></figure>
 
 <p>　　这个规则会递归的往内部循环。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">foo0</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">foo1</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">10</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">foo0</span> <span class="title">a0</span>[10] = &#123;</span>&#123;<span class="number">0</span>&#125;&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">foo1</span> <span class="title">a1</span>[10] = &#123;</span>&#123;&#123;<span class="number">0</span>&#125;&#125;&#125;;</span><br></pre></td></tr></table></figure>
 
 <p>　　看到这里，心细的同学可能会有个疑问，为什么总是给第一个元素赋值？似乎隐含着一个规则，第一个元素被显式的初始化以后，后面的元素就自动初始化了。<br>　　但其实，在C语言标准中，并没有所谓“<strong>部分初始化(Partial Initialization)</strong>”这样的概念。只有<strong>Initialization</strong>和<strong>No Initialization</strong>，即<strong>初始化</strong>和<strong>未初始化</strong>。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">10</span>] = &#123;<span class="number">1</span>,<span class="number">2</span>&#125;;                    <span class="comment">//Case 1: Partial Initialization</span></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">10</span>] = &#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>&#125;;    <span class="comment">//Case 2: Initialization (Complete)</span></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">10</span>];                            <span class="comment">//Case 3: No Initialization</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Case 1: Partial Initialization</span></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">10</span>] = &#123;<span class="number">1</span>,<span class="number">2</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Case 2: Initialization (Complete)</span></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">10</span>] = &#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Case 3: No Initialization</span></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
 
 <p>　　<code>Case 1</code>中的“部分初始化”虽然没有这个名称，但是具体的行为是有标准的。<br>　　简单说，<strong>就是未显式初始化的剩余变量会被初始化为<code>0</code></strong>。</p>
 <p>　　<strong>C99 Standard 6.7.8.21</strong></p>
