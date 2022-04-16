@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"fan003322.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="当你打开命令行cmd程序，敲下python命令时，有没有想过cmd是怎么找到python程序进行执行的，为什么你不需要把python的完整路径（例如E:\Python\Python37\python.exe）输入。">
+  <meta name="description" content="当你打开命令行cmd程序，敲下python命令时，有没有想过cmd是怎么找到python程序进行执行的，为什么你不需要把python的完整路径（例如E:\Python\Python37\python.exe）输入。  　　从python命令到python可执行程序，背后默默的起作用的就是Windows上非常有名的环境变量Path。当你输入python命令时，cmd会从Path环境变量中设置的文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hello Environment variables">
 <meta property="og:url" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/index.html">
 <meta property="og:site_name" content="Fan003322">
-<meta property="og:description" content="当你打开命令行cmd程序，敲下python命令时，有没有想过cmd是怎么找到python程序进行执行的，为什么你不需要把python的完整路径（例如E:\Python\Python37\python.exe）输入。">
+<meta property="og:description" content="当你打开命令行cmd程序，敲下python命令时，有没有想过cmd是怎么找到python程序进行执行的，为什么你不需要把python的完整路径（例如E:\Python\Python37\python.exe）输入。  　　从python命令到python可执行程序，背后默默的起作用的就是Windows上非常有名的环境变量Path。当你输入python命令时，cmd会从Path环境变量中设置的文">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/python_in_cmd.png">
 <meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/ev.JPG">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/MINGW_HOME.JPG">
 <meta property="og:image" content="https://fan003322.github.io/2020/03/05/Hello-Environment-variables/MINGW_HOME_PATH.JPG">
 <meta property="article:published_time" content="2020-03-05T14:23:53.000Z">
-<meta property="article:modified_time" content="2020-03-10T13:01:21.768Z">
+<meta property="article:modified_time" content="2022-04-16T06:58:27.516Z">
 <meta property="article:author" content="Fan">
 <meta property="article:tag" content="software">
 <meta property="article:tag" content="环境变量">
@@ -87,7 +87,11 @@
   </style>
 </noscript>
 
-</head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -206,53 +210,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>　　当你打开命令行<code>cmd</code>程序，敲下<code>python</code>命令时，有没有想过<code>cmd</code>是怎么找到<code>python</code>程序进行执行的，为什么你不需要把python的完整路径（例如<code>E:\Python\Python37\python.exe</code>）输入。</p>
-<img src="/2020/03/05/Hello-Environment-variables/python_in_cmd.png" class="" title="python.exe">
-<p>　　从python命令到python可执行程序，背后默默的起作用的就是Windows上非常有名的环境变量<code>Path</code>。当你输入python命令时，cmd会从<code>Path</code>环境变量中设置的文件夹中，依次去寻找名为python的可执行程序或者批处理文件，并运行找到的第一符合命名的程序。<br>　　我们也一定遇到过一些令人困恼的问题。比如因为没有添加可执行文件所在的路径，导致找不到想要运行的程序。或者是添加的版本不对，导致找不到想要的那个版本。我们往往会忽视环境变量的存在，但是当你忽视它的时候，它往往会给你惹些麻烦。<br>　　环境变量就是本文的主题。</p>
-<hr>
-<h2 id="1-环境变量是什么？"><a href="#1-环境变量是什么？" class="headerlink" title="1. 环境变量是什么？"></a>1. 环境变量是什么？</h2><p>　　环境变量（Environment Variable, EV），是一些系统&#x2F;用户定义的全局变量，它在程序刚刚启动的时候会被加载，并在整个程序生命周期内可以被读取。<br>　　很多程序在运行时，会去读取一些约定俗称的环境变量来完成程序所需要的功能。<br>　　例如系统默认的环境变量<code>TEMP</code>定义了一个临时文件夹路径，通常解压程序都会读取这个变量，并默认会将临时文件解压到该路径下。<br>　　例如一些Java程序会默认去读取<code>JAVA_HOME</code>变量获取Java包的路径。</p>
-<hr>
-<h2 id="2-怎么查看环境变量？"><a href="#2-怎么查看环境变量？" class="headerlink" title="2. 怎么查看环境变量？"></a>2. 怎么查看环境变量？</h2><p>　　在Windows上，可以通过</p>
+        <p>　　当你打开命令行<code>cmd</code>程序，敲下<code>python</code>命令时，有没有想过<code>cmd</code>是怎么找到<code>python</code>程序进行执行的，为什么你不需要把python的完整路径（例如<code>E:\Python\Python37\python.exe</code>）输入。 <img src="/2020/03/05/Hello-Environment-variables/python_in_cmd.png" class="" title="python.exe"> 　　从python命令到python可执行程序，背后默默的起作用的就是Windows上非常有名的环境变量<code>Path</code>。当你输入python命令时，cmd会从<code>Path</code>环境变量中设置的文件夹中，依次去寻找名为python的可执行程序或者批处理文件，并运行找到的第一符合命名的程序。<br> 　　我们也一定遇到过一些令人困恼的问题。比如因为没有添加可执行文件所在的路径，导致找不到想要运行的程序。或者是添加的版本不对，导致找不到想要的那个版本。我们往往会忽视环境变量的存在，但是当你忽视它的时候，它往往会给你惹些麻烦。<br> 　　环境变量就是本文的主题。</p>
+<hr />
+<h2 id="环境变量是什么">1. 环境变量是什么？</h2>
+<p>　　环境变量(Environment Variable, EV)，是一些系统/用户定义的全局变量，它在程序刚刚启动的时候会被加载，并在整个程序生命周期内可以被读取。<br> 　　很多程序在运行时，会去读取一些约定俗称的环境变量来完成程序所需要的功能。<br> 　　例如系统默认的环境变量<code>TEMP</code>定义了一个临时文件夹路径，通常解压程序都会读取这个变量，并默认会将临时文件解压到该路径下。<br> 　　例如一些Java程序会默认去读取<code>JAVA_HOME</code>变量获取Java包的路径。</p>
+<hr />
+<h2 id="怎么查看环境变量">2. 怎么查看环境变量？</h2>
+<p>　　在Windows上，可以通过</p>
 <ul>
 <li>右键点击<code>计算机</code></li>
 <li>选择<code>属性</code></li>
 <li>选择<code>高级系统设置</code></li>
 <li>选择<code>高级</code></li>
-<li>选择<code>环境变量</code><br>  查看和修改环境变量。<img src="/2020/03/05/Hello-Environment-variables/ev.JPG" class=""></li>
+<li>选择<code>环境变量</code> 查看和修改环境变量。 <img src="/2020/03/05/Hello-Environment-variables/ev.JPG" class=""></li>
 </ul>
-<p>　　可以看到上下两栏环境变量值。用户变量是当前用户专属的，而系统变量则是所有用户共享的。在系统变量里可以找到<code>Path</code>变量。当运行程序（比如命令行cmd.exe）时，这些变量都会加载到你当前的程序中，你可以读取这些值。<br>　　环境变量并不是Windows系统独有的。在Linux上，每一个程序都会有该程序独有的环境变量。如果使用<code>bash</code>，可以使用<code>env</code>命令查看当前shell中所包含的环境变量。<br>　　也可以在用户目录下编辑<code>.bashrc</code>，添加一些<code>export VAR_NAME=&quot;*****&quot;</code>的语句，向当前的shell注入名为<code>VAR_NAME</code>的环境变量。当你使用mobaxterm或者putty进行SSH连接环境时，<code>.bashrc</code>脚本就会被自动执行，你可以读取到定义好的环境变量值。</p>
+<p>　　可以看到上下两栏环境变量值。用户变量是当前用户专属的，而系统变量则是所有用户共享的。在系统变量里可以找到<code>Path</code>变量。当运行程序（比如命令行cmd.exe）时，这些变量都会加载到你当前的程序中，你可以读取这些值。<br> 　　环境变量并不是Windows系统独有的。在Linux上，每一个程序都会有该程序独有的环境变量。如果使用<code>bash</code>，可以使用<code>env</code>命令查看当前shell中所包含的环境变量。<br> 　　也可以在用户目录下编辑<code>.bashrc</code>，添加一些<code>export VAR_NAME="*****"</code>的语句，向当前的shell注入名为<code>VAR_NAME</code>的环境变量。当你使用mobaxterm或者putty进行SSH连接环境时，<code>.bashrc</code>脚本就会被自动执行，你可以读取到定义好的环境变量值。</p>
 <blockquote>
-<h3 id="Tip-1：修改了环境变量，需要确保它生效"><a href="#Tip-1：修改了环境变量，需要确保它生效" class="headerlink" title="Tip 1：修改了环境变量，需要确保它生效"></a>Tip 1：修改了环境变量，需要确保它生效</h3><p>值得注意的是，环境变量通常是在程序加载时被生效到程序中的。修改了<code>Path</code>值以后，不要忘了重启命令行使之生效。或者修改了<code>.bashrc</code>以后，不要忘了运行<code>source .bashrc</code>命令。</p>
+<h3 id="tip-1修改了环境变量需要确保它生效">Tip 1：修改了环境变量，需要确保它生效</h3>
+<p>值得注意的是，环境变量通常是在程序加载时被生效到程序中的。修改了<code>Path</code>值以后，不要忘了重启命令行使之生效。或者修改了<code>.bashrc</code>以后，不要忘了运行<code>source .bashrc</code>命令。</p>
 </blockquote>
-<hr>
-<h2 id="3-修改Path的优雅姿势"><a href="#3-修改Path的优雅姿势" class="headerlink" title="3. 修改Path的优雅姿势"></a>3. 修改Path的优雅姿势</h2><p>　　因为我们的主要工作界面还是Windows，大部分时候还是需要在Windows上进行开发，进行本地编译验证工作。修改Path环境变量是永远也躲不过的一关，因此单独拿出来介绍一下。<br>　　<code>Path</code>就是Windows最常用的环境变量，它里面包含了用<code>分号;</code>分割的多个路径。当你不指明可执行程序的路径时，就会从这些路径中去寻找。<br>　　在Win7上，编辑Path的界面是相当丑陋的。变量值只能单行浏览。在cmd中，我们可以输入path命令来查看，也是相当丑陋。如果你想找某个路径是否存在，基本上需要把它拷贝出来，在记事本里搜索。</p>
-<img src="/2020/03/05/Hello-Environment-variables/path_win7.JPG" class="">
-<img src="/2020/03/05/Hello-Environment-variables/path_in_cmd.JPG" class="">
-<p>　　在Win10上，这一点得到了改善。每个路径都是单独列出，方便阅读和修改。</p>
-<img src="/2020/03/05/Hello-Environment-variables/path_win10.png" class="">
-
+<hr />
+<h2 id="修改path的优雅姿势">3. 修改Path的优雅姿势</h2>
+<p>　　因为我们的主要工作界面还是Windows，大部分时候还是需要在Windows上进行开发，进行本地编译验证工作。修改Path环境变量是永远也躲不过的一关，因此单独拿出来介绍一下。<br> 　　<code>Path</code>就是Windows最常用的环境变量，它里面包含了用<code>分号;</code>分割的多个路径。当你不指明可执行程序的路径时，就会从这些路径中去寻找。<br> 　　在Win7上，编辑Path的界面是相当丑陋的。变量值只能单行浏览。在cmd中，我们可以输入path命令来查看，也是相当丑陋。如果你想找某个路径是否存在，基本上需要把它拷贝出来，在记事本里搜索。 <img src="/2020/03/05/Hello-Environment-variables/path_win7.JPG" class=""> <img src="/2020/03/05/Hello-Environment-variables/path_in_cmd.JPG" class=""> 　　在Win10上，这一点得到了改善。每个路径都是单独列出，方便阅读和修改。 <img src="/2020/03/05/Hello-Environment-variables/path_win10.png" class=""></p>
 <blockquote>
-<h3 id="Tips-2：在Win7上使用第三方工具修改EV"><a href="#Tips-2：在Win7上使用第三方工具修改EV" class="headerlink" title="Tips 2：在Win7上使用第三方工具修改EV"></a>Tips 2：在Win7上使用第三方工具修改EV</h3><p>例如Rapid Environment Editor，<a target="_blank" rel="noopener" href="https://www.rapidee.com/en/about">点击官方网站</a></p>
+<h3 id="tips-2在win7上使用第三方工具修改ev">Tips 2：在Win7上使用第三方工具修改EV</h3>
+<p>例如Rapid Environment Editor，<a target="_blank" rel="noopener" href="https://www.rapidee.com/en/about">点击官方网站</a></p>
 </blockquote>
-<p>　　为了应对Win7上系统的不良设计，我们可能需要借助一些第三方工具。在这个工具中，通过树状形式展开了环境变量，能够起到和Win10一样直观的效果。<br><img src="https://www.rapidee.com/images/xrapidee.png.pagespeed.ic.xneSx_nHk4.webp" alt="Rapid截图"></p>
+<p>　　为了应对Win7上系统的不良设计，我们可能需要借助一些第三方工具。在这个工具中，通过树状形式展开了环境变量，能够起到和Win10一样直观的效果。 <img src="https://www.rapidee.com/images/xrapidee.png.pagespeed.ic.xneSx_nHk4.webp" alt="Rapid截图" /></p>
 <blockquote>
-<h3 id="Tips-3：新添加的路径一般加在末尾"><a href="#Tips-3：新添加的路径一般加在末尾" class="headerlink" title="Tips 3：新添加的路径一般加在末尾"></a>Tips 3：新添加的路径一般加在末尾</h3><p>查找可执行程序是按顺序从前往后查找，靠前的往往是系统目录，你不会希望你配置的第三方程序插了系统程序的队。</p>
+<h3 id="tips-3新添加的路径一般加在末尾">Tips 3：新添加的路径一般加在末尾</h3>
+<p>查找可执行程序是按顺序从前往后查找，靠前的往往是系统目录，你不会希望你配置的第三方程序插了系统程序的队。</p>
 </blockquote>
-<p>　　但是直接往Path添加<strong>可执行程序所在文件夹的绝对路径</strong>并不是最佳方式。<br>　　例如，我们希望把MinGW添加到Path中，使得我们能够在Windows上使用gcc进行编译。<br>MinGW的所在路径可能是：<strong>E:&#x2F;mingw64&#x2F;x86_64-8.1.0-release-posix-seh-rt_v6-rev0&#x2F;<strong>。<br>　　那么我们可以把</strong>E:&#x2F;mingw64&#x2F;x86_64-8.1.0-release-posix-seh-rt_v6-rev0&#x2F;</strong> ***bin&#x2F;***添加到Path的末尾。<br>　　但是这并不是最佳方式。</p>
+<p>　　但是直接往Path添加<strong>可执行程序所在文件夹的绝对路径</strong>并不是最佳方式。<br> 　　例如，我们希望把MinGW添加到Path中，使得我们能够在Windows上使用gcc进行编译。 MinGW的所在路径可能是：<strong>E:/mingw64/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/</strong>。那么我们可以把<strong>E:/mingw64/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/</strong> <strong><em>bin/</em></strong>添加到Path的末尾。<br> 　　但是这并不是最佳方式。</p>
 <blockquote>
-<h3 id="Tips-4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path"><a href="#Tips-4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path" class="headerlink" title="Tips 4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path"></a>Tips 4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path</h3><ol>
-<li>先添加<code>MINGW64_HOME</code>变量，值为<strong>E:&#x2F;mingw64&#x2F;x86_64-8.1.0-release-posix-seh-rt_v6-rev0&#x2F;</strong></li>
+<h3 id="tips-4先创建路径对应的环境变量然后采用引用变量方式添加到path">Tips 4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path</h3>
+<ol type="1">
+<li>先添加<code>MINGW64_HOME</code>变量，值为<strong>E:/mingw64/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/</strong></li>
 <li>在Path末尾添加<code>%MINGW64_HOME%/bin</code>。</li>
 </ol>
 </blockquote>
 <img src="/2020/03/05/Hello-Environment-variables/MINGW_HOME.JPG" class="">
 <img src="/2020/03/05/Hello-Environment-variables/MINGW_HOME_PATH.JPG" class="">
-
-<p>　　这样做有诸多好处。<br>　　比方说，MinGW的版本更新了，或者在本地需要支持多个版本。那么你并不需要去Path里艰难寻找MinGW的路径，不用担心修改坏。你只需要更新<code>MINGW64_HOME</code>变量值就行了。<br>　　另外，回忆前面提到的，环境变量是给各个应用程序共享的。创建<code>MINGW64_HOME</code>变量，意味着你在其他程序中也能使用。比方说，你想在VSCode中编译调试，在<code>launch.json</code>中指定<code>gdb</code>所在位置时，你也可以直接使用该环境变量，避免将来更新MinGW而导致VSCode调试工程的失败。</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在lanuch.json中引用系统变量指定gdb位置</span></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;env:MINGW64_HOME&#125;/bin/gdb.exe&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>　　希望通过本文能够使大家对环境变量有一个基本的印象，并学会在Windows配置环境变量。将来遇到找不到运行的程序之类的问题时，能提供一个定位问题的思路，并对症下药。并在操作Linux系统时，也能举一反三，面对新的开发环境不会感到手足无措。</p>
+<p>　　这样做有诸多好处。<br> 　　比方说，MinGW的版本更新了，或者在本地需要支持多个版本。那么你并不需要去Path里艰难寻找MinGW的路径，不用担心修改坏。你只需要更新<code>MINGW64_HOME</code>变量值就行了。<br> 　　另外，回忆前面提到的，环境变量是给各个应用程序共享的。创建<code>MINGW64_HOME</code>变量，意味着你在其他程序中也能使用。比方说，你想在VSCode中编译调试，在<code>launch.json</code>中指定<code>gdb</code>所在位置时，你也可以直接使用该环境变量，避免将来更新MinGW而导致VSCode调试工程的失败。 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在lanuch.json中引用系统变量指定gdb位置</span></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;env:MINGW64_HOME&#125;/bin/gdb.exe&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<hr />
+<h2 id="总结">4. 总结</h2>
+<p>　　希望通过本文能够使大家对环境变量有一个基本的印象，并学会在Windows配置环境变量。将来遇到找不到运行的程序之类的问题时，能提供一个定位问题的思路，并对症下药。并在操作Linux系统时，也能举一反三，面对新的开发环境不会感到手足无措。</p>
 
     </div>
 
@@ -336,7 +338,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">1. 环境变量是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%EF%BC%9F"><span class="nav-text">2. 怎么查看环境变量？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tip-1%EF%BC%9A%E4%BF%AE%E6%94%B9%E4%BA%86%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%EF%BC%8C%E9%9C%80%E8%A6%81%E7%A1%AE%E4%BF%9D%E5%AE%83%E7%94%9F%E6%95%88"><span class="nav-text">Tip 1：修改了环境变量，需要确保它生效</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%BF%AE%E6%94%B9Path%E7%9A%84%E4%BC%98%E9%9B%85%E5%A7%BF%E5%8A%BF"><span class="nav-text">3. 修改Path的优雅姿势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tips-2%EF%BC%9A%E5%9C%A8Win7%E4%B8%8A%E4%BD%BF%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7%E4%BF%AE%E6%94%B9EV"><span class="nav-text">Tips 2：在Win7上使用第三方工具修改EV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tips-3%EF%BC%9A%E6%96%B0%E6%B7%BB%E5%8A%A0%E7%9A%84%E8%B7%AF%E5%BE%84%E4%B8%80%E8%88%AC%E5%8A%A0%E5%9C%A8%E6%9C%AB%E5%B0%BE"><span class="nav-text">Tips 3：新添加的路径一般加在末尾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tips-4%EF%BC%9A%E5%85%88%E5%88%9B%E5%BB%BA%E8%B7%AF%E5%BE%84%E5%AF%B9%E5%BA%94%E7%9A%84%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%EF%BC%8C%E7%84%B6%E5%90%8E%E9%87%87%E7%94%A8%E5%BC%95%E7%94%A8%E5%8F%98%E9%87%8F%E6%96%B9%E5%BC%8F%E6%B7%BB%E5%8A%A0%E5%88%B0Path"><span class="nav-text">Tips 4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-text">4. 总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">1. 环境变量是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-text">2. 怎么查看环境变量？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tip-1%E4%BF%AE%E6%94%B9%E4%BA%86%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E9%9C%80%E8%A6%81%E7%A1%AE%E4%BF%9D%E5%AE%83%E7%94%9F%E6%95%88"><span class="nav-text">Tip 1：修改了环境变量，需要确保它生效</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9path%E7%9A%84%E4%BC%98%E9%9B%85%E5%A7%BF%E5%8A%BF"><span class="nav-text">3. 修改Path的优雅姿势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tips-2%E5%9C%A8win7%E4%B8%8A%E4%BD%BF%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7%E4%BF%AE%E6%94%B9ev"><span class="nav-text">Tips 2：在Win7上使用第三方工具修改EV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tips-3%E6%96%B0%E6%B7%BB%E5%8A%A0%E7%9A%84%E8%B7%AF%E5%BE%84%E4%B8%80%E8%88%AC%E5%8A%A0%E5%9C%A8%E6%9C%AB%E5%B0%BE"><span class="nav-text">Tips 3：新添加的路径一般加在末尾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tips-4%E5%85%88%E5%88%9B%E5%BB%BA%E8%B7%AF%E5%BE%84%E5%AF%B9%E5%BA%94%E7%9A%84%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E7%84%B6%E5%90%8E%E9%87%87%E7%94%A8%E5%BC%95%E7%94%A8%E5%8F%98%E9%87%8F%E6%96%B9%E5%BC%8F%E6%B7%BB%E5%8A%A0%E5%88%B0path"><span class="nav-text">Tips 4：先创建路径对应的环境变量，然后采用引用变量方式添加到Path</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">4. 总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -446,6 +448,61 @@
 
 
   
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 

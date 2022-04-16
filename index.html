@@ -71,7 +71,11 @@
   </style>
 </noscript>
 
-</head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -182,7 +186,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>最近工程中经常用到yaml作为配置文件。<br>比如一个简单配置文件：</p>
+          <p>　　多层嵌套dict的访问，需要逐级的使用字符串、括号来访问引用，既不简洁直观，还增加了打字量。本文介绍一种将dict的访问，转变成<strong>直接访问属性</strong>的方法。<br> 　　<code>MultiLevelDict['key1']['key2']['key3']</code> <span class="math inline">\(\rightarrow\)</span> <code>MultiLevelDict.key1.key2.key3</code></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/04/15/dict-to-attr/#more" rel="contents">
@@ -321,7 +325,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>　　在Windows上开发C&#x2F;C++程序有很多方式可供选择，通常的第一反应可能是使用Visual Studio。<br>　　但是如果你正在开发一个跨平台程序，比方说你正在开发一个算法库，这个库主要运行在Linux系统中，同时需要将它编译成native-lib集成在Android APK里做算法测试，但是你的主要编程界面又是在Windows，希望在Windows上做编译调试。那么这时候如果使用Visual Studio就可能面临一些问题，比如VS中编译器的标准和GNU会有差别，API也可能有差别，你不仅需要将代码在至少2种环境中编译调试通过，还需要维护多套的编译工程。维护代码的工作量已经不小了，实际上维护编译工程也不是一个简单轻松的事，那么VS可能就不是一个很好的选择。<br>　　对于这种场景，我推荐使用<code>MinGW</code>搭配<code>CMake</code>的方式构建整个编译工具链，达成<strong>代码和编译工程One Track</strong>的目的，提交开发效率。<br>　　本文就是介绍MinGW的使用。<br>　　如果只想知道MinGW怎么使用，可以单刀直入，直接看<code>第5节 使用方法</code>。</p>
+          <p>　　在Windows上开发C/C++程序有很多方式可供选择，通常的第一反应可能是使用Visual Studio。<br> 　　但是如果你正在开发一个跨平台程序，比方说你正在开发一个算法库，这个库主要运行在Linux系统中，同时需要将它编译成native-lib集成在Android APK里做算法测试，但是你的主要编程界面又是在Windows，希望在Windows上做编译调试。那么这时候如果使用Visual Studio就可能面临一些问题，比如VS中编译器的标准和GNU会有差别，API也可能有差别，你不仅需要将代码在至少2种环境中编译调试通过，还需要维护多套的编译工程。维护代码的工作量已经不小了，实际上维护编译工程也不是一个简单轻松的事，那么VS可能就不是一个很好的选择。<br> 　　对于这种场景，我推荐使用<code>MinGW</code>搭配<code>CMake</code>的方式构建整个编译工具链，达成<strong>代码和编译工程One Track</strong>的目的，提交开发效率。<br> 　　如果只想知道MinGW怎么使用，可以单刀直入，直接看<code>第5节 使用方法</code>。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/03/09/Hello-MinGW/#more" rel="contents">
@@ -395,7 +399,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>　　当你打开命令行<code>cmd</code>程序，敲下<code>python</code>命令时，有没有想过<code>cmd</code>是怎么找到<code>python</code>程序进行执行的，为什么你不需要把python的完整路径（例如<code>E:\Python\Python37\python.exe</code>）输入。</p>
+          <p>　　当你打开命令行<code>cmd</code>程序，敲下<code>python</code>命令时，有没有想过<code>cmd</code>是怎么找到<code>python</code>程序进行执行的，为什么你不需要把python的完整路径（例如<code>E:\Python\Python37\python.exe</code>）输入。 <img src="/2020/03/05/Hello-Environment-variables/python_in_cmd.png" class title="python.exe"> 　　从python命令到python可执行程序，背后默默的起作用的就是Windows上非常有名的环境变量<code>Path</code>。当你输入python命令时，cmd会从<code>Path</code>环境变量中设置的文件夹中，依次去寻找名为python的可执行程序或者批处理文件，并运行找到的第一符合命名的程序。<br> 　　我们也一定遇到过一些令人困恼的问题。比如因为没有添加可执行文件所在的路径，导致找不到想要运行的程序。或者是添加的版本不对，导致找不到想要的那个版本。我们往往会忽视环境变量的存在，但是当你忽视它的时候，它往往会给你惹些麻烦。<br> 　　环境变量就是本文的主题。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/03/05/Hello-Environment-variables/#more" rel="contents">
@@ -581,6 +585,61 @@
 
 
   
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
