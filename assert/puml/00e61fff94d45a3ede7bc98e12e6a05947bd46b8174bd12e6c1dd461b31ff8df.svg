@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="658px" preserveAspectRatio="none" style="width:752px;height:658px;background:#000000;" version="1.1" viewBox="0 0 752 658" width="752px" zoomAndPan="magnify"><defs/><g><rect fill="#1B1B1C" height="1" style="stroke:#1B1B1C;stroke-width:1.0;" width="1" x="0" y="0"/><text fill="#33FF02" font-family="sans-serif" font-size="12" font-style="italic" font-weight="bold" lengthAdjust="spacing" textLength="167" x="5" y="17">PlantUML 1.2022.4beta2</text><rect fill="#33FF02" height="21.2969" style="stroke:#33FF02;stroke-width:1.0;" width="740" x="5" y="26.9688"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="185" x="6" y="41.9688">[From string (line 35) ]</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="5" x="5" y="62.2656"> </text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="131" x="5" y="78.5625">@startmindmap</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="148" x="5" y="94.8594">+ Virtural Memory</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="450" x="5" y="111.1563">++ Defination: A system that uses an address mapping</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="477" x="5" y="127.4531">+++ Maps virtual address space to physical address space</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="507" x="5" y="143.75">+++_ 和Single Addressing相比，virtual address不是真实的物理地址</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="98" x="5" y="160.0469">+++ 硬件资源</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="157" x="5" y="176.3438">++++ physical RAM</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="190" x="5" y="192.6406">++++ hardware devices</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="157" x="5" y="208.9375">+++++_ PCI devices</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="141" x="5" y="225.2344">+++++_ GPU RAM</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="202" x="5" y="241.5313">+++++_ On-SoC IP blocks</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="123" x="5" y="257.8281">++ Advantages</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="465" x="5" y="274.125">***:Each processes can have a different memory mapping</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="296" x="25" y="290.4219">--&gt; [**Built-in memory protection**];</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="603" x="5" y="306.7188">++++ One process's RAM is inaccessible (and invisible) to other processes</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="431" x="5" y="323.0156">++++ kernel RAM is invisible to user space processes</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="218" x="5" y="339.3125">+++ Memory can be moved</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="297" x="5" y="355.6094">+++ Memory can be swapped to disk</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="604" x="5" y="371.9063">+++ Map hardware device memory to a process's address space (GPU E.g.)</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="740" x="5" y="388.2031">+++ Physical RAM can be mapped into multiple processes at once  --&gt; [**Shared memory**]</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="546" x="5" y="404.5">+++ Access permissions for memory regions (Read, Write, Execute)</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="191" x="5" y="420.7969">++ Two address spaces</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="192" x="5" y="437.0938">+++ Physical addresses</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="240" x="5" y="453.3906">++++_ (used by **hardware**)</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="85" x="5" y="469.6875">++++ DMA</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="140" x="5" y="485.9844">++++ peripherals</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="181" x="5" y="502.2813">+++ Virtual addresses</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="237" x="5" y="518.5781">++++_ (used by **software**)</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="291" x="5" y="534.875">++++ load/store instructions (RISC)</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="383" x="5" y="551.1719">++++ Any instruction accessing memory (CISC)</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="410" x="5" y="567.4688">++ Mapping is performed in hardware  --&gt; **MMU**</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="647" x="5" y="583.7656">+++ No performance penalty for accessing &lt;i&gt;already-mapped&lt;/i&gt; RAM regions</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="371" x="5" y="600.0625">+++ Permissions are handled without penalty</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="671" x="5" y="616.3594">+++ The same CPU instructions are used for accessing RAM and mapped hardware</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" text-decoration="wavy underline" textLength="598" x="5" y="632.6563">***:Software, during its normal operation, will only use virtual addressed.</text><text fill="#FF0000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="109" x="10" y="648.9531">Syntax Error?</text><!--MD5=[48d4951ce4c2bdf70ed8b5b82edc1b83]
+@startmindmap
++ Virtural Memory
+++ Defination: A system that uses an address mapping
++++ Maps virtual address space to physical address space
++++_ 和Single Addressing相比，virtual address不是真实的物理地址
++++ 硬件资源
+++++ physical RAM
+++++ hardware devices
++++++_ PCI devices
++++++_ GPU RAM
++++++_ On-SoC IP blocks
+++ Advantages
+***:Each processes can have a different memory mapping
+    - -> [**Built-in memory protection**];
+++++ One process's RAM is inaccessible (and invisible) to other processes
+++++ kernel RAM is invisible to user space processes
++++ Memory can be moved
++++ Memory can be swapped to disk
++++ Map hardware device memory to a process's address space (GPU E.g.)
++++ Physical RAM can be mapped into multiple processes at once  - -> [**Shared memory**]
++++ Access permissions for memory regions (Read, Write, Execute)
+++ Two address spaces
++++ Physical addresses
+++++_ (used by **hardware**)
+++++ DMA
+++++ peripherals
++++ Virtual addresses
+++++_ (used by **software**)
+++++ load/store instructions (RISC)
+++++ Any instruction accessing memory (CISC)
+++ Mapping is performed in hardware  - -> **MMU**
++++ No performance penalty for accessing <i>already-mapped</i> RAM regions
++++ Permissions are handled without penalty
++++ The same CPU instructions are used for accessing RAM and mapped hardware
+***:Software, during its normal operation, will only use virtual addressed.
+(include kernel and user space, this is not true of all OS's)
+@endmindmap
+
+PlantUML version 1.2022.4beta2(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fan003322.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="根据演讲中的slide show整理。这个Intro主要介绍重要基本概念，基本不涉及代码。 Introduction to Memory Management in Linux by The Linux Foundation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Kernel学习笔记1：Memory Management Intro">
+<meta property="og:url" content="https://fan003322.github.io/2022/02/21/linux-kernel-1-memory-management-foundation-info/index.html">
+<meta property="og:site_name" content="Fan003322">
+<meta property="og:description" content="根据演讲中的slide show整理。这个Intro主要介绍重要基本概念，基本不涉及代码。 Introduction to Memory Management in Linux by The Linux Foundation">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/9e0d4220dc1d9bff09530634c86d47c1d0e15611d707d4df6b97ee57c8717d3a.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/dc012b996452f91d596315fab2871b70c165ab93cf4ad6e3cbbffcb2578d9559.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/21e96e4c79f3b0df8de1cfe25a15af495799deaa2a36b3d6d2b9aad18306f9a8.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/47b40435bbc20cf1696553db21d1abd23aea29edee9f4d799a87f2bcec1a21ab.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/65a1b92bc644258eeb332782b0560a54d8e4ad4fd000e1d70520045868eb5470.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/fe43daadd82a73b907825332bf49a6c1511668f69630381e2fbe407467c1ad26.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/439c7a7d4988256f8bbf157a5c679bb0909a1067b7b0e2c788a4af5f5ef7f2b3.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/10bbdb1e49e8cc5df5d61d0e0ae1b153bbab928bcecf2a399e49591f9d4c9523.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/4c225dfa9840302de2da435d81f03e0c09829d4f93d9c4fec52e7544ebd53999.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/3042a7ad2f1cdd80323cf7e028afcea5ab3f84cac193f1aea4e6acb20f459e2b.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/14f8a8099e0d44e4d35f1cc28abc94abcdb1ee13f70fd21607bcf93919a8d0d2.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/1515804b2cda0c65c3d95a004a69a504b17af920a2358845f12a58c67732c7c0.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/ca0f06945dc118127bc25647624f6551ba9dba2c0e8a3c2fdf7ffaeddf95d5c6.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/d0b2ebd2f98e04029cc875b2b9a0e504bb86c2601ba4eb5a053900f52342b46e.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/8f213a8ceafb1c72e687f9636453a6fd1805907ebac66e485e60d50956095011.svg">
+<meta property="og:image" content="https://fan003322.github.io/assert/puml/d4a640d2b092d5f56ce75f4fcd5c2fb30e9ba0ff456b95e36acd8de73179160a.svg">
+<meta property="article:published_time" content="2022-02-21T12:16:18.000Z">
+<meta property="article:modified_time" content="2022-04-21T08:16:40.488Z">
+<meta property="article:author" content="Fan">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Kenerl">
+<meta property="article:tag" content="Memory Management">
+<meta property="article:tag" content="MM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fan003322.github.io/assert/puml/9e0d4220dc1d9bff09530634c86d47c1d0e15611d707d4df6b97ee57c8717d3a.svg">
+
+<link rel="canonical" href="https://fan003322.github.io/2022/02/21/linux-kernel-1-memory-management-foundation-info/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Linux Kernel学习笔记1：Memory Management Intro | Fan003322</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fan003322</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fan003322.github.io/2022/02/21/linux-kernel-1-memory-management-foundation-info/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fan003322">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux Kernel学习笔记1：Memory Management Intro
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-21 20:16:18" itemprop="dateCreated datePublished" datetime="2022-02-21T20:16:18+08:00">2022-02-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux-Kernel/" itemprop="url" rel="index"><span itemprop="name">Linux Kernel</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>根据演讲中的slide show整理。这个Intro主要介绍重要基本概念，基本不涉及代码。</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=7aONIVSXiJ8&amp;ab_channel=TheLinuxFoundation">Introduction to Memory Management in Linux</a><br> by The Linux Foundation</p>
+</blockquote>
+<hr />
+<h1 id="summary">Summary</h1>
+<img src="/assert/puml/9e0d4220dc1d9bff09530634c86d47c1d0e15611d707d4df6b97ee57c8717d3a.svg"/>
+<ul>
+<li><strong>Single address space</strong></li>
+<li><strong>Virtual Memory</strong>：或者叫Virtual Addressing更合适</li>
+<li><strong>Kernel Addressing</strong>：Kernel采用virtual memory，分为3类</li>
+<li><strong>MMU</strong>：支撑Kernel采用virtual memory的硬件
+<ul>
+<li><strong>TLB</strong>：缓存virtual和physical映射关系的硬件单元（属于MMU的一部分）</li>
+</ul></li>
+<li><strong>Page</strong> / <strong>Page Table</strong> / <strong>Page Faults</strong>
+<ul>
+<li><strong>Page</strong>：内存管理单元</li>
+<li><strong>Page Table</strong>：映射管理表</li>
+<li><strong>Page Faults</strong>：缺页异常</li>
+</ul></li>
+<li><strong>Swapping</strong>：如何解决内存不足问题</li>
+<li><strong>User space allocation</strong>：用户内存分配的一些细节</li>
+</ul>
+<blockquote>
+<p>需要注意的是，相关的知识点不是孤立存在的。</p>
+</blockquote>
+<hr />
+<h1 id="single-address-space">1. Single Address Space</h1>
+<img src="/assert/puml/dc012b996452f91d596315fab2871b70c165ab93cf4ad6e3cbbffcb2578d9559.svg"/>
+<p>正因为Single Addressing存在诸多问题和限制，才需要Virtual Addressing。</p>
+<hr />
+<h1 id="virtual-memory">2. Virtual Memory</h1>
+<img src="/assert/puml/21e96e4c79f3b0df8de1cfe25a15af495799deaa2a36b3d6d2b9aad18306f9a8.svg"/>
+<hr />
+<h1 id="mmu-and-tlb">3. MMU and TLB</h1>
+<h2 id="mmu">3.1 MMU</h2>
+<img src="/assert/puml/47b40435bbc20cf1696553db21d1abd23aea29edee9f4d799a87f2bcec1a21ab.svg"/>
+<h2 id="tlb">3.2 TLB</h2>
+<img src="/assert/puml/65a1b92bc644258eeb332782b0560a54d8e4ad4fd000e1d70520045868eb5470.svg"/>
+<hr />
+<h1 id="page-page-fault-page-table">4. Page / Page Fault / Page Table</h1>
+<h2 id="page">4.1 Page</h2>
+<img src="/assert/puml/fe43daadd82a73b907825332bf49a6c1511668f69630381e2fbe407467c1ad26.svg"/>
+<h2 id="page-fault">4.2 Page Fault</h2>
+<img src="/assert/puml/439c7a7d4988256f8bbf157a5c679bb0909a1067b7b0e2c788a4af5f5ef7f2b3.svg"/>
+<h2 id="page-table">4.3 Page Table</h2>
+<img src="/assert/puml/10bbdb1e49e8cc5df5d61d0e0ae1b153bbab928bcecf2a399e49591f9d4c9523.svg"/>
+<h2 id="小结">小结</h2>
+<ul>
+<li>TLB的大小有限，mapping多于TLB个数
+<ul>
+<li>因此使用virtual memory去访问physical memory的时候可能会出现TLB中不存在mapping的情况；</li>
+<li>Kernel管理了所有的mapping，Kernel去替换TLB里面的mapping；</li>
+<li>Page fault是不可避免的，是一种设计。</li>
+</ul></li>
+<li>Physical memory资源有限
+<ul>
+<li>如果physical memory很大，足够容纳所有的memory需求，那么就不需要Swapping操作；</li>
+<li>Swapping用来解决物理内存有限的状况。</li>
+</ul></li>
+</ul>
+<hr />
+<h1 id="kernel-virtual-memory">5. Kernel Virtual Memory</h1>
+<img src="/assert/puml/4c225dfa9840302de2da435d81f03e0c09829d4f93d9c4fec52e7544ebd53999.svg"/>
+<h2 id="virtual-address-3-kinds">Virtual Address (3 kinds)</h2>
+<img src="/assert/puml/3042a7ad2f1cdd80323cf7e028afcea5ab3f84cac193f1aea4e6acb20f459e2b.svg"/>
+<h3 id="a.-kernel-logical-address">a. Kernel Logical Address</h3>
+<img src="/assert/puml/14f8a8099e0d44e4d35f1cc28abc94abcdb1ee13f70fd21607bcf93919a8d0d2.svg"/>
+<h3 id="b.-kernel-virtual-address">b. Kernel Virtual Address</h3>
+<img src="/assert/puml/1515804b2cda0c65c3d95a004a69a504b17af920a2358845f12a58c67732c7c0.svg"/>
+<h3 id="c.-user-virtual-address">c. User Virtual Address</h3>
+<img src="/assert/puml/ca0f06945dc118127bc25647624f6551ba9dba2c0e8a3c2fdf7ffaeddf95d5c6.svg"/>
+<hr />
+<h1 id="user-space">6. User Space</h1>
+<img src="/assert/puml/d0b2ebd2f98e04029cc875b2b9a0e504bb86c2601ba4eb5a053900f52342b46e.svg"/>
+<hr />
+<h1 id="high-level-implementation">7. High-Level implementation</h1>
+<img src="/assert/puml/8f213a8ceafb1c72e687f9636453a6fd1805907ebac66e485e60d50956095011.svg"/>
+<hr />
+<h1 id="stack">8. Stack</h1>
+<img src="/assert/puml/d4a640d2b092d5f56ce75f4fcd5c2fb30e9ba0ff456b95e36acd8de73179160a.svg"/>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Kenerl/" rel="tag"># Kenerl</a>
+              <a href="/tags/Memory-Management/" rel="tag"># Memory Management</a>
+              <a href="/tags/MM/" rel="tag"># MM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/11/c-struct-array-initialization/" rel="prev" title="C语言中怎么把struct/数组初始化为0？">
+      <i class="fa fa-chevron-left"></i> C语言中怎么把struct/数组初始化为0？
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/15/dict-to-attr/" rel="next" title="dict自动反序列生成object">
+      dict自动反序列生成object <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#summary"><span class="nav-text">Summary</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#single-address-space"><span class="nav-text">1. Single Address Space</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#virtual-memory"><span class="nav-text">2. Virtual Memory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mmu-and-tlb"><span class="nav-text">3. MMU and TLB</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mmu"><span class="nav-text">3.1 MMU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tlb"><span class="nav-text">3.2 TLB</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#page-page-fault-page-table"><span class="nav-text">4. Page &#x2F; Page Fault &#x2F; Page Table</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#page"><span class="nav-text">4.1 Page</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#page-fault"><span class="nav-text">4.2 Page Fault</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#page-table"><span class="nav-text">4.3 Page Table</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kernel-virtual-memory"><span class="nav-text">5. Kernel Virtual Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#virtual-address-3-kinds"><span class="nav-text">Virtual Address (3 kinds)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a.-kernel-logical-address"><span class="nav-text">a. Kernel Logical Address</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b.-kernel-virtual-address"><span class="nav-text">b. Kernel Virtual Address</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c.-user-virtual-address"><span class="nav-text">c. User Virtual Address</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#user-space"><span class="nav-text">6. User Space</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#high-level-implementation"><span class="nav-text">7. High-Level implementation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#stack"><span class="nav-text">8. Stack</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v6.1.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

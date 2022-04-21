@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="162px" preserveAspectRatio="none" style="width:594px;height:162px;background:#FFFFFF;" version="1.1" viewBox="0 0 594 162" width="594px" zoomAndPan="magnify"><defs/><g><rect fill="#F1F1F1" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="223" x="10" y="62.2227"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="203" x="20" y="85.2178">Virtual Addresses（3 kinds）</text><rect fill="#F1F1F1" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="67" x="283" y="48.1484"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="47" x="293" y="71.1436">Kernel</text><rect fill="#FFA500" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="182" x="400" y="20"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="162" x="410" y="42.9951">Kernel Logical Address</text><path d="M350,66.2969 L360,66.2969 C375,66.2969 375,38.1484 390,38.1484 L400,38.1484 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><rect fill="#FFA500" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="179" x="400" y="76.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="159" x="410" y="99.292">Kernel Virtual Address</text><path d="M350,66.2969 L360,66.2969 C375,66.2969 375,94.4453 390,94.4453 L400,94.4453 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><path d="M233,80.3711 L243,80.3711 C258,80.3711 258,66.2969 273,66.2969 L283,66.2969 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><rect fill="#F1F1F1" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="51" x="283" y="104.4453"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31" x="293" y="127.4404">User</text><path d="M233,80.3711 L243,80.3711 C258,80.3711 258,122.5938 273,122.5938 L283,122.5938 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><!--MD5=[3ff1ab3ad1eb5b6b6c2bbf2d82f5df49]
+@startmindmap
++ Virtual Addresses（3 kinds）
+++ Kernel
++++[#orange] Kernel Logical Address
++++[#orange] Kernel Virtual Address
+++ User
+
+@endmindmap
+
+PlantUML version 1.2022.4beta2(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

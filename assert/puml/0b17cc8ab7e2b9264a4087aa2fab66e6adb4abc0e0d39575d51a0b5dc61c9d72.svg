@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="191px" preserveAspectRatio="none" style="width:1614px;height:191px;background:#FFFFFF;" version="1.1" viewBox="0 0 1614 191" width="1614px" zoomAndPan="magnify"><defs/><g><rect fill="#F1F1F1" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="217" x="10" y="76.7999"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="197" x="20" y="99.795">High-Level implementation</text><rect fill="#FFE4B5" height="53.5999" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="84" x="277" y="68.1484"/><text fill="#000000" font-family="monospace" font-size="14" lengthAdjust="spacing" textLength="64" x="287" y="91.1124">malloc()</text><text fill="#000000" font-family="monospace" font-size="14" lengthAdjust="spacing" textLength="64" x="287" y="107.9123">calloc()</text><rect fill="#F1F1F1" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="525" x="411" y="76.7999"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="505" x="421" y="99.795">use either brk() or mmap() depending on the requested allocation size</text><rect fill="#FFE4B5" height="36.7999" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="60" x="986" y="20"/><text fill="#000000" font-family="monospace" font-size="14" lengthAdjust="spacing" textLength="40" x="996" y="42.9639">brk()</text><rect fill="#F1F1F1" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="207" x="1096" y="20.2515"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="187" x="1106" y="43.2466">Small allocations use brk()</text><path d="M1046,38.4 L1056,38.4 C1071,38.4 1071,38.4 1086,38.4 L1096,38.4 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><path d="M936,94.9484 L946,94.9484 C961,94.9484 961,38.4 976,38.4 L986,38.4 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><rect fill="#FFE4B5" height="36.7999" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="68" x="986" y="76.7999"/><text fill="#000000" font-family="monospace" font-size="14" lengthAdjust="spacing" textLength="48" x="996" y="99.7639">mmap()</text><rect fill="#F1F1F1" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="229" x="1104" y="77.0515"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="209" x="1114" y="100.0466">Large allocations use mmap()</text><path d="M1054,95.1999 L1064,95.1999 C1079,95.1999 1079,95.1999 1094,95.1999 L1104,95.1999 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><path d="M936,94.9484 L946,94.9484 C961,94.9484 961,95.1999 976,95.1999 L986,95.1999 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><rect fill="#F1F1F1" height="36.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:1.5;" width="616" x="986" y="133.5999"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="165" x="996" y="156.595">See mallopt(3) and the</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="172" x="1165" y="156.595">M_MMAP_THRESHOLD</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="251" x="1341" y="156.595">parameter to control this behavior</text><path d="M936,94.9484 L946,94.9484 C961,94.9484 961,151.7483 976,151.7483 L986,151.7483 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><path d="M361,94.9484 L371,94.9484 C386,94.9484 386,94.9484 401,94.9484 L411,94.9484 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><path d="M227,94.9484 L237,94.9484 C252,94.9484 252,94.9484 267,94.9484 L277,94.9484 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><!--MD5=[817310981ac1c1b1b479040a158ba962]
+@startmindmap
++ High-Level implementation
+**[#moccasin]:<code>
+malloc()
+calloc()
+</code>;
++++ use either brk() or mmap() depending on the requested allocation size
+****[#moccasin]:<code>
+brk()
+</code>;
++++++ Small allocations use brk()
+****[#moccasin]:<code>
+mmap()
+</code>;
++++++ Large allocations use mmap()
+++++ See mallopt(3) and the **M_MMAP_THRESHOLD** parameter to control this behavior
+@endmindmap
+
+PlantUML version 1.2022.4beta2(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

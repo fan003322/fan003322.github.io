@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="136px" preserveAspectRatio="none" style="width:316px;height:136px;background:#000000;" version="1.1" viewBox="0 0 316 136" width="316px" zoomAndPan="magnify"><defs/><g><rect fill="#112325" height="1" style="stroke:#112325;stroke-width:1.0;" width="1" x="0" y="0"/><text fill="#33FF02" font-family="sans-serif" font-size="12" font-style="italic" font-weight="bold" lengthAdjust="spacing" textLength="167" x="5" y="17">PlantUML 1.2022.4beta2</text><rect fill="#33FF02" height="21.2969" style="stroke:#33FF02;stroke-width:1.0;" width="302" x="5" y="26.9688"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="175" x="6" y="41.9688">[From string (line 3) ]</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="5" x="5" y="62.2656"> </text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="131" x="5" y="78.5625">@startmindmap</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="302" x="5" y="94.8594">+++[#orange] Kernel Logical Address</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" text-decoration="wavy underline" textLength="304" x="5" y="111.1563">++++ Normal address space of kernel</text><text fill="#FF0000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="69" x="10" y="127.4531">error42L</text><!--MD5=[8b06f896311c4dd284f5f082221ae6ac]
+@startmindmap
++++[#orange] Kernel Logical Address
+++++ Normal address space of kernel
+*****[#moccasin]:<code>
+kmalloc()
+</code>;
++++++ Kernel stacks (per process)
+++++ A **fixed offset** from their physical addresses
++++++_ Virt: 0xc0000000 - -> Phys: 0x00000000
++++++ virtually-contiguous regions are by nature also physically contiguous
++++++ combined with the inablity to be swapped out, makes them suitable for **DMA** transfers
+++++ easy to convert between virtual and physical
+*****[#moccasin]:<code>
+__pa(x)
+</code>;
+*****[#moccasin]:<code>
+__va(x)
+</code>;
+++++ Can never be swapped out
+++++ Mapping
++++++ 32 bit
+++++++ for small-memory systems (below 1GB RAM)
++++++++ Kernel Logical address space starts at **PAGE_OFFSET** and goes through the **end of physical memory**
+++++++ for large-memory systems (more than 1GB RAM)
++++++++ not all of the physical RAM can be mapped into kernel's address space
++++++++ kernel address space is the top 1GB of virtual address space, by default
++++++++ ~104 MB is reserved at the top of the kernel's memory space for non-contiguous allocations
++++++++ **Low Memory**
+********:Only the **bottom part** of physical RAM has a kernel logical address
+(896MB, 0xc0000000 ~ 0xf800000);
+********:this memory is called Low Memory
+phys: 0x00000000 ~ 0xf8000000;
++++++++ **High Memory**
+++++++++ beyond ~896MB
+++++++++ No logical address
+++++++++ Not physically contiguous when used in the kernel
++++++++_ -> 这种情况只会在32bit中出现，kernel virtual memory < physical memory
++++++ 64 bit
+++++++ always enough kernel address space to accommodate all the RAM
++++++ just beacause physical addresses could have a kernel logical address, it doesn't mean the kernel is <i>actually using every byte of memory</i> on the system
+@endmindmap
+
+PlantUML version 1.2022.4beta2(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
